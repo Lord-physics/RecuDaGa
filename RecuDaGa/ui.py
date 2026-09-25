@@ -1,4 +1,4 @@
-"""Interfaz Tkinter: selecci�n, ejecuci�n cancelable y resultados."""
+"""Interfaz Tkinter: selección, ejecución cancelable y resultados."""
 import ctypes
 import subprocess
 import sys
@@ -28,7 +28,7 @@ class App(tk.Tk):
         self.mode = tk.StringVar(value="Archivos accesibles")
         self.source = tk.StringVar()
         self.destination = tk.StringVar()
-        self.engine = tk.StringVar(value="Firmas b�sicas")
+        self.engine = tk.StringVar(value="Firmas básicas")
         self.photorec_exe = tk.StringVar()
         if initial:
             self.mode.set(initial.get("mode") or self.mode.get())
@@ -43,13 +43,13 @@ class App(tk.Tk):
     def _build(self):
         body = ttk.Frame(self, padding=16)
         body.pack(fill="both", expand=True)
-        ttk.Label(body, text="Recuperaci�n local de archivos", font=("Segoe UI", 17, "bold")).pack(anchor="w")
-        ttk.Label(body, text="El origen se lee sin modificarlo. Elige un destino en otro disco f�sico.").pack(anchor="w", pady=(2, 12))
+        ttk.Label(body, text="Recuperación local de archivos", font=("Segoe UI", 17, "bold")).pack(anchor="w")
+        ttk.Label(body, text="El origen se lee sin modificarlo. Elige un destino en otro disco físico.").pack(anchor="w", pady=(2, 12))
         row = ttk.Frame(body)
         row.pack(fill="x")
         ttk.Label(row, text="Modo", width=12).pack(side="left")
         mode_box = ttk.Combobox(row, textvariable=self.mode, state="readonly",
-                                values=("Archivos accesibles", "Disco no reconocido / an�lisis profundo"))
+                                values=("Archivos accesibles", "Disco no reconocido / análisis profundo"))
         mode_box.pack(side="left", fill="x", expand=True)
         mode_box.bind("<<ComboboxSelected>>", lambda _event: self._update_mode())
         ttk.Button(row, text="Actualizar discos", command=self.refresh_disks).pack(side="left", padx=(8, 0))
@@ -72,7 +72,7 @@ class App(tk.Tk):
         row.pack(fill="x", pady=(12, 0))
         ttk.Label(row, text="Motor", width=12).pack(side="left")
         self.engine_box = ttk.Combobox(row, textvariable=self.engine, state="readonly",
-                                       values=("Firmas b�sicas", "PhotoRec externo"))
+                                       values=("Firmas básicas", "PhotoRec externo"))
         self.engine_box.pack(side="left", fill="x", expand=True)
         self.engine_box.bind("<<ComboboxSelected>>", lambda _event: self._update_mode())
         ttk.Button(row, text="Elegir PhotoRec", command=self._choose_photorec).pack(side="left", padx=(8, 0))
@@ -81,7 +81,7 @@ class App(tk.Tk):
 
         row = ttk.Frame(body)
         row.pack(fill="x", pady=(15, 6))
-        self.start_button = ttk.Button(row, text="Iniciar recuperaci�n", command=self.start)
+        self.start_button = ttk.Button(row, text="Iniciar recuperación", command=self.start)
         self.start_button.pack(side="left")
         ttk.Button(row, text="Cancelar", command=self.cancel.set).pack(side="left", padx=(8, 0))
         self.busy = ttk.Progressbar(row, mode="indeterminate")
@@ -102,11 +102,11 @@ class App(tk.Tk):
         deep = self.mode.get() != "Archivos accesibles"
         self.engine_box.configure(state="readonly" if deep else "disabled")
         if deep:
-            description = ("Firmas b�sicas: JPEG, PNG y PDF, sin nombres originales."
-                           if self.engine.get() == "Firmas b�sicas" else
-                           "PhotoRec: formatos que admita su versi�n; binario externo no incluido.")
+            description = ("Firmas básicas: JPEG, PNG y PDF, sin nombres originales."
+                           if self.engine.get() == "Firmas básicas" else
+                           "PhotoRec: formatos que admita su versión; binario externo no incluido.")
         else:
-            description = "Copia archivos legibles y valida formatos admitidos; intenta reconstruir ZIP da�ados."
+            description = "Copia archivos legibles y valida formatos admitidos; intenta reconstruir ZIP dañados."
         self.engine_label.configure(text=description)
 
     def refresh_disks(self):
@@ -117,11 +117,11 @@ class App(tk.Tk):
             self.source_box.configure(values=choices)
             self._append(f"Discos detectados: {len(self.disks)}; unidades con letra: {len(self.letters)}")
             for disk in self.disks:
-                self._append(f"Disco {disk['Number']}: {disk.get('FriendlyName', '')} � {disk.get('OperationalStatus', '')}")
+                self._append(f"Disco {disk['Number']}: {disk.get('FriendlyName', '')} — {disk.get('OperationalStatus', '')}")
         except RuntimeError as exc:
             self.disks, self.letters = [], {}
             self.source_box.configure(values=[])
-            self._append(f"Enumeraci�n no disponible: {exc}. Prueba ejecutar como administrador fuera de un entorno restringido.")
+            self._append(f"Enumeración no disponible: {exc}. Prueba ejecutar como administrador fuera de un entorno restringido.")
 
     def _choose_source(self):
         value = filedialog.askdirectory(title="Selecciona carpeta o unidad de origen")
@@ -129,10 +129,10 @@ class App(tk.Tk):
             self.source.set(value)
 
     def _choose_image(self):
-        value = filedialog.askopenfilename(title="Selecciona una imagen de disco para an�lisis profundo")
+        value = filedialog.askopenfilename(title="Selecciona una imagen de disco para análisis profundo")
         if value:
             self.source.set(value)
-            self.mode.set("Disco no reconocido / an�lisis profundo")
+            self.mode.set("Disco no reconocido / análisis profundo")
             self._update_mode()
 
     def _choose_destination(self):
@@ -156,27 +156,27 @@ class App(tk.Tk):
             try:
                 number = int(source[len(r"\\.\PhysicalDrive"):])
             except (IndexError, ValueError):
-                raise ValueError("Ruta de disco f�sico no v�lida.") from None
+                raise ValueError("Ruta de disco físico no válida.") from None
             if number not in {int(d["Number"]) for d in self.disks}:
-                raise ValueError("El disco f�sico no aparece en el inventario actual.")
+                raise ValueError("El disco físico no aparece en el inventario actual.")
             source_disk = number
             if self.mode.get() == "Archivos accesibles":
-                raise ValueError("Selecciona el modo de an�lisis profundo para un disco f�sico.")
+                raise ValueError("Selecciona el modo de análisis profundo para un disco físico.")
         else:
             path = Path(source)
             if not path.exists():
-                raise ValueError("El origen no existe o Windows no puede acceder a �l.")
+                raise ValueError("El origen no existe o Windows no puede acceder a él.")
             if self.mode.get() == "Archivos accesibles" and not path.is_dir():
                 raise ValueError("El rescate de archivos accesibles requiere una carpeta o unidad.")
             if self.mode.get() != "Archivos accesibles" and not path.is_file():
-                raise ValueError("El an�lisis profundo requiere un disco f�sico o una imagen de disco.")
+                raise ValueError("El análisis profundo requiere un disco físico o una imagen de disco.")
             source_disk = disk_for_path(path, self.letters)
         destination = check_destination(source_disk, self.destination.get(), self.letters)
         if physical:
             probe = probe_physical(source_disk)
             if probe != "Lectura permitida":
                 raise ValueError(probe)
-        if self.mode.get() == "Disco no reconocido / an�lisis profundo" and self.engine.get() == "PhotoRec externo":
+        if self.mode.get() == "Disco no reconocido / análisis profundo" and self.engine.get() == "PhotoRec externo":
             exe = Path(self.photorec_exe.get())
             if exe.name.lower() not in {"photorec.exe", "photorec_win.exe"} or not exe.is_file():
                 raise ValueError("Selecciona photorec_win.exe o photorec.exe para este motor.")
@@ -191,7 +191,7 @@ class App(tk.Tk):
             if ("permisos de administrador" in str(exc) and not is_admin()
                     and self.source.get().lower().startswith(r"\\.\physicaldrive")):
                 if messagebox.askyesno("Permisos de lectura",
-                                       "Windows exige permisos de administrador para leer este disco f�sico. �Reabrir la aplicaci�n con esos permisos?"):
+                                       "Windows exige permisos de administrador para leer este disco físico. ¿Reabrir la aplicación con esos permisos?"):
                     self._elevate()
                 return
             messagebox.showerror("No se puede iniciar", str(exc))
@@ -213,7 +213,7 @@ class App(tk.Tk):
         result = shell.ShellExecuteW(None, "runas", sys.executable, arguments,
                                      str(Path(__file__).resolve().parent.parent), 1)
         if not result or result <= 32:
-            messagebox.showerror("No se pudo elevar", "Windows no autoriz� la apertura con permisos de administrador.")
+            messagebox.showerror("No se pudo elevar", "Windows no autorizó la apertura con permisos de administrador.")
         else:
             self.destroy()
 
@@ -249,7 +249,7 @@ class App(tk.Tk):
                 event = self.events.get_nowait()
                 if event[0] == "progress":
                     _, count, name, status = event
-                    self.status.configure(text=f"{count} resultados � {name}: {status}")
+                    self.status.configure(text=f"{count} resultados — {name}: {status}")
                 elif event[0] == "done":
                     _, count, failed, report, cancelled = event
                     self._append(f"{'Cancelado' if cancelled else 'Terminado'}: {count} resultados, {failed} fallidos. Informe: {report}")

@@ -1,4 +1,4 @@
-"""Reparaciones expl�citas sobre copias; nunca sobre el origen."""
+"""Reparaciones explícitas sobre copias; nunca sobre el origen."""
 from pathlib import Path
 import shutil
 import tempfile
@@ -14,7 +14,7 @@ def repair_zip(copy_path):
     """Rebuild an archive from individually readable entries, if some failed."""
     copy_path = Path(copy_path)
     if copy_path.suffix.lower() not in ZIP_EXTENSIONS:
-        return None, "Sin reparaci�n autom�tica para este formato"
+        return None, "Sin reparación automática para este formato"
     target = copy_path.with_name(copy_path.stem + ".reparado" + copy_path.suffix)
     good = bad = 0
     try:
@@ -36,12 +36,12 @@ def repair_zip(copy_path):
                 good += 1
         if not good or not bad:
             target.unlink(missing_ok=True)
-            return None, "No hay entradas da�adas aislables o no quedan entradas sanas"
+            return None, "No hay entradas dañadas aislables o no quedan entradas sanas"
         valid, evidence = validate(target)
         if valid:
             return target, f"ZIP reconstruido con {good} entradas sanas; {bad} omitidas. {evidence}"
         target.unlink(missing_ok=True)
-        return None, f"La copia reconstruida no pas� la validaci�n: {evidence}"
+        return None, f"La copia reconstruida no pasó la validación: {evidence}"
     except (OSError, RuntimeError, ValueError, zipfile.BadZipFile) as exc:
         target.unlink(missing_ok=True)
         return None, f"No se pudo reconstruir ZIP: {exc}"

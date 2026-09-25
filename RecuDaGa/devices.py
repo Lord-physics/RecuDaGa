@@ -1,4 +1,4 @@
-"""Enumeraci�n y comprobaciones de origen/destino en Windows."""
+"""Enumeración y comprobaciones de origen/destino en Windows."""
 import ctypes
 import json
 import os
@@ -41,7 +41,7 @@ def inventory():
         disks, letters = _inventory_native()
         if letters:
             return disks, letters
-        raise RuntimeError(f"No se pudo consultar la informaci�n de discos: {exc}") from exc
+        raise RuntimeError(f"No se pudo consultar la información de discos: {exc}") from exc
 
 
 def _inventory_native():
@@ -78,7 +78,7 @@ def _inventory_native():
         if handle not in (None, ctypes.c_void_p(-1).value):
             numbers.add(number)
             kernel.CloseHandle(ctypes.c_void_p(handle))
-    disks = [{"Number": number, "FriendlyName": "Disco f�sico (nombre no disponible)",
+    disks = [{"Number": number, "FriendlyName": "Disco físico (nombre no disponible)",
               "OperationalStatus": "Detectado"} for number in sorted(numbers)]
     return disks, letters
 
@@ -93,10 +93,10 @@ def disk_for_path(path, letters):
         if not ctypes.windll.kernel32.GetVolumePathNameW(root, buffer, len(buffer)):
             raise ValueError("No se pudo identificar el volumen de la ruta.")
         if buffer.value.upper() != drive.upper() + "\\":
-            raise ValueError("Volumen montado en carpeta: no se puede verificar su disco f�sico.")
+            raise ValueError("Volumen montado en carpeta: no se puede verificar su disco físico.")
     disk = letters.get(drive[0].upper())
     if disk is None:
-        raise ValueError(f"No se pudo identificar el disco f�sico de {drive}.")
+        raise ValueError(f"No se pudo identificar el disco físico de {drive}.")
     return disk
 
 
@@ -105,7 +105,7 @@ def check_destination(source_disk, destination, letters):
     if not dest.is_dir():
         raise ValueError("El destino debe ser una carpeta existente.")
     if disk_for_path(dest, letters) == source_disk:
-        raise ValueError("El destino est� en el mismo disco f�sico que el origen.")
+        raise ValueError("El destino está en el mismo disco físico que el origen.")
     return dest
 
 

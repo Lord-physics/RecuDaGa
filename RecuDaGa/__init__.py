@@ -1,1 +1,1 @@
-"""RecuDaGa: recuperaci�n local y conservadora de archivos."""
+"""RecuDaGa: recuperación local y conservadora de archivos."""

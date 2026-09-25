@@ -1,4 +1,4 @@
-"""Informe JSON at�mico y legible."""
+"""Informe JSON atómico y legible."""
 from datetime import datetime, timezone
 import json
 from pathlib import Path

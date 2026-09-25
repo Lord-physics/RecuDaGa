@@ -1,4 +1,4 @@
-"""Validadores: devolver evidencia concreta, nunca inferir reparaci�n por extensi�n."""
+"""Validadores: devolver evidencia concreta, nunca inferir reparación por extensión."""
 import bz2
 import gzip
 import lzma
@@ -39,7 +39,7 @@ def _archive(path, kind):
         if kind == "zip":
             with zipfile.ZipFile(path) as f:
                 bad = f.testzip()
-                return (bad is None, "Entradas ZIP y CRC correctos" if bad is None else f"Entrada ZIP da�ada: {bad}")
+                return (bad is None, "Entradas ZIP y CRC correctos" if bad is None else f"Entrada ZIP dañada: {bad}")
         if kind == "tar":
             with tarfile.open(path) as f:
                 for member in f:
@@ -78,7 +78,7 @@ def validate(path):
             tail = f.read()
         if ext in {".jpg", ".jpeg"}:
             ok = head.startswith(b"\xff\xd8\xff") and b"\xff\xd9" in tail
-            return (None if ok else False, "Marcadores JPEG presentes; decodificaci�n no comprobada" if ok else "Marcadores JPEG incompletos")
+            return (None if ok else False, "Marcadores JPEG presentes; decodificación no comprobada" if ok else "Marcadores JPEG incompletos")
         if ext == ".pdf":
             ok = head.startswith(b"%PDF-") and b"%%EOF" in tail
             return (None if ok else False, "Marcadores PDF presentes; estructura interna no comprobada" if ok else "Marcadores PDF incompletos")
@@ -98,7 +98,7 @@ def validate(path):
                     return False, "Datos WAV truncados"
             return True, "Cabecera y fotogramas WAV legibles"
         if ext in {".mp3", ".mp4", ".mkv", ".avi", ".mov", ".flac", ".7z", ".rar", ".doc", ".xls", ".ppt"}:
-            return None, "Formato reconocido; validaci�n completa no implementada"
+            return None, "Formato reconocido; validación completa no implementada"
         return None, "Sin validador para este formato"
     except (OSError, EOFError, ValueError, wave.Error) as exc:
         return False, f"No se pudo leer o validar: {exc}"

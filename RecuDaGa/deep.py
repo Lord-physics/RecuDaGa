@@ -1,4 +1,4 @@
-"""Extracci�n por firmas y puente opcional al motor PhotoRec."""
+"""Extracción por firmas y puente opcional al motor PhotoRec."""
 import os
 from pathlib import Path
 import subprocess
@@ -73,7 +73,7 @@ def carve(source, output, cancel, progress, max_bytes=None):
                                 valid, evidence = validate(target)
                                 entries.append({"origen": str(source), "offset": offset,
                                                 "destino": str(target), "bytes": size,
-                                                "estado": "validado" if valid is True else "no_verificado" if valid is None else "da�ado",
+                                                "estado": "validado" if valid is True else "no_verificado" if valid is None else "dañado",
                                                 "evidencia": evidence + "; nombre y carpeta originales no recuperables"})
                                 progress(len(entries), target.name, entries[-1]["estado"])
                             break
@@ -84,7 +84,7 @@ def carve(source, output, cancel, progress, max_bytes=None):
                         entries.append({"origen": str(source), "offset": offset,
                                         "destino": str(partial), "bytes": len(content),
                                         "estado": "parcial",
-                                        "evidencia": "Firma inicial hallada; no se encontr� el marcador final dentro del l�mite"})
+                                        "evidencia": "Firma inicial hallada; no se encontró el marcador final dentro del límite"})
                         progress(len(entries), partial.name, "parcial")
                 except OSError as exc:
                     entries.append({"origen": str(source), "offset": offset, "destino": None,
@@ -132,9 +132,9 @@ def photorec(executable, source, output, cancel, progress):
             path = Path(root) / name
             valid, evidence = validate(path)
             entries.append({"origen": str(source), "destino": str(path), "bytes": path.stat().st_size,
-                            "estado": "validado" if valid is True else "da�ado" if valid is False else "no_verificado",
+                            "estado": "validado" if valid is True else "dañado" if valid is False else "no_verificado",
                             "evidencia": evidence + "; PhotoRec no conserva siempre nombres o carpetas"})
     if proc.returncode not in (0, None) and not cancel.is_set():
         entries.append({"origen": str(source), "destino": None, "bytes": 0,
-                        "estado": "fallido", "evidencia": f"PhotoRec termin� con c�digo {proc.returncode}"})
+                        "estado": "fallido", "evidencia": f"PhotoRec terminó con código {proc.returncode}"})
     return entries

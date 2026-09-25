@@ -1,4 +1,4 @@
-"""Rescate de archivos accesibles preservando �rbol y estado real de lectura."""
+"""Rescate de archivos accesibles preservando árbol y estado real de lectura."""
 import os
 from pathlib import Path
 
@@ -36,13 +36,13 @@ def recover_tree(source, output, cancel, progress):
                         dst.write(block)
                         copied += len(block)
                 if cancel.is_set():
-                    status, evidence = "parcial", "Operaci�n cancelada antes de completar la lectura"
+                    status, evidence = "parcial", "Operación cancelada antes de completar la lectura"
                 else:
                     valid, evidence = validate(target)
-                    status = "validado" if valid is True else "da�ado" if valid is False else "no_verificado"
+                    status = "validado" if valid is True else "dañado" if valid is False else "no_verificado"
                 item = {"origen": str(original), "destino": str(target), "bytes": copied,
                         "estado": status, "evidencia": evidence}
-                if status == "da�ado" and not cancel.is_set():
+                if status == "dañado" and not cancel.is_set():
                     repaired, detail = repair_zip(target)
                     item["reparacion"] = detail
                     if repaired:
